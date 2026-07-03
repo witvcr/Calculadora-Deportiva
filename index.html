@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de Precios — La Deportiva</title>
+<style>
+  :root{--negro:#111;--naranja:#FFA429;--naranja2:#f3c66b;--crema:#faf6ee;--tinta:#20242a;--gris:#7a756b;--linea:#e5e0d5}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--crema);color:var(--tinta);line-height:1.5}
+  .wrap{max-width:660px;margin:0 auto;padding:0 14px 60px}
+  header{background:var(--negro);color:#fff;margin:0 -14px 16px;padding:20px 18px;border-bottom:4px solid var(--naranja)}
+  header h1{font-size:21px;font-weight:800;letter-spacing:-.3px}
+  header p{color:#c9c2b4;font-size:13px;margin-top:4px}
+  .tabs{display:flex;gap:6px;margin-bottom:14px}
+  .tab{flex:1;text-align:center;padding:11px 6px;background:#fff;border:1.5px solid var(--linea);border-radius:10px;font-weight:700;font-size:14px;color:var(--gris);cursor:pointer;user-select:none}
+  .tab.active{background:var(--negro);color:var(--naranja);border-color:var(--negro)}
+  .panel{display:none}.panel.active{display:block}
+  .card{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:16px;margin-bottom:14px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:13px;color:var(--gris);font-weight:600;margin-bottom:5px}
+  .inbox{display:flex;align-items:center;border:1.5px solid var(--linea);border-radius:10px;overflow:hidden;background:#fff}
+  .inbox:focus-within{border-color:var(--naranja)}
+  .inbox .pre{padding:0 0 0 12px;color:var(--gris);font-weight:700}
+  .inbox input,.inbox select{border:none;outline:none;padding:12px;font-size:16px;width:100%;font-weight:700;color:var(--tinta);background:transparent;font-family:inherit}
+  .inbox .suf{padding:0 12px 0 0;color:var(--gris);font-size:13px;white-space:nowrap}
+  .row2{display:flex;gap:10px}.row2 .field{flex:1}
+  .result{background:var(--negro);color:#fff;border-radius:14px;padding:16px;margin-bottom:14px}
+  .result h3{color:var(--naranja);font-size:13px;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+  .pr{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid #2a2f36}
+  .pr:last-child{border-bottom:none}
+  .pr .n{font-size:15px;color:#e7e2d8}.pr .n small{color:#9a948a;font-size:12px}
+  .pr .v{font-size:22px;font-weight:800;color:var(--naranja2);white-space:nowrap;text-align:right}
+  .pr .v small{font-size:12px;color:#9a948a;font-weight:600}
+  .costline{font-size:13px;color:var(--gris);margin:2px 0 12px}
+  details{background:#fff;border:1px solid var(--linea);border-radius:14px;margin-bottom:14px;overflow:hidden}
+  summary{padding:14px 16px;font-weight:700;cursor:pointer;font-size:14px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::before{content:"\2699  "}
+  details[open] summary{border-bottom:1px solid var(--linea)}
+  .adv{padding:14px 16px}
+  .mtable,.rtable{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  .mtable th,.rtable th{text-align:right;font-size:11px;color:var(--gris);text-transform:uppercase;padding:4px 3px}
+  .mtable th:first-child,.rtable th:first-child{text-align:left}
+  .mtable td,.rtable td{padding:4px 3px;border-top:1px solid var(--linea)}
+  .mtable input{width:60px;text-align:center;border:1.5px solid var(--linea);border-radius:7px;padding:5px;font-weight:700;font-family:inherit;outline:none}
+  .rtable input{border:1.5px solid var(--linea);border-radius:7px;padding:6px 4px;font-weight:700;font-family:inherit;outline:none;font-size:13px}
+  .rtable input:focus,.mtable input:focus{border-color:var(--naranja)}
+  .rtable .i-name{width:100%;min-width:66px}
+  .rtable .i-costo{width:56px;text-align:right}
+  .rtable .i-usado{width:44px;text-align:right}
+  .rtable select{border:1.5px solid var(--linea);border-radius:7px;padding:6px 2px;font-weight:700;font-family:inherit;font-size:12px;outline:none;background:#fff}
+  .rtable .i-res{text-align:right;font-weight:700;white-space:nowrap}
+  .rtable .del{background:none;border:none;color:#b8341f;font-size:18px;cursor:pointer;padding:0 2px;font-weight:700}
+  .rhead2{display:grid;grid-template-columns:1.45fr 1.4fr 1.7fr 0.72fr;gap:5px;font-size:10px;text-transform:uppercase;color:var(--gris);font-weight:700;letter-spacing:.2px;padding:0 2px 4px}
+  .ing3{border-top:1px solid var(--linea);padding:7px 0}
+  .ing3 .r1{display:flex;gap:8px;align-items:center;margin-bottom:5px}
+  .ing3 .r1 input{flex:1;border:1.5px solid var(--linea);border-radius:7px;padding:7px 8px;font-weight:700;font-family:inherit;font-size:13px;outline:none;min-width:0}
+  .ing3 .r1 input:focus{border-color:var(--naranja)}
+  .ing3 .r1 .del{background:none;border:none;color:#b8341f;font-size:19px;cursor:pointer;padding:0 2px;font-weight:700;line-height:1}
+  .ing3 .r2{display:grid;grid-template-columns:1.45fr 1.4fr 1.7fr 0.72fr;gap:5px;align-items:center}
+  .ing3 .box{display:flex;align-items:center;border:1.5px solid var(--linea);border-radius:7px;overflow:hidden;background:#fff}
+  .ing3 .box:focus-within{border-color:var(--naranja)}
+  .ing3 .box .pre{padding-left:6px;color:var(--gris);font-weight:700;font-size:12px}
+  .ing3 .box input{border:none;outline:none;padding:7px 5px 7px 3px;font-weight:700;font-family:inherit;font-size:13px;width:100%;min-width:0;text-align:right}
+  .ing3 .box select{border:none;outline:none;background:#f4f1ea;font-weight:700;font-family:inherit;font-size:11px;padding:7px 0;cursor:pointer;flex-shrink:0;width:30px;text-align:center;-webkit-appearance:none;appearance:none}
+  .ing3 .res{font-weight:800;font-size:13px;text-align:right;white-space:nowrap;color:var(--tinta)}
+  .ing3 .res.warn{color:#b8341f;font-size:15px}
+  .addbtn{margin-top:10px;width:100%;background:#fff;border:1.5px dashed var(--naranja);color:#c07d15;padding:10px;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit}
+  .addbtn:active{background:#fff8e6}
+  .seclbl{font-size:13px;color:var(--gris);font-weight:600;display:block;margin-bottom:8px}
+  .seclbl small{font-weight:400;font-size:11px}
+  .lupa{display:flex;align-items:center;border:1.5px solid var(--linea);border-radius:11px;background:#fff;padding:0 12px;margin-bottom:12px}
+  .lupa span{font-size:18px;color:var(--gris)}
+  .lupa input{border:none;outline:none;padding:13px 10px;font-size:16px;font-weight:700;width:100%;font-family:inherit;background:transparent}
+  .catgroup{font-size:12px;font-weight:800;color:#2f7d54;margin:10px 2px 8px;text-transform:uppercase;letter-spacing:.3px}
+  .catitem{border:1px solid var(--linea);border-radius:11px;padding:10px 11px;margin-bottom:8px;background:#fff}
+  .catitem .ctop{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .catitem .nm{font-weight:800;font-size:14px}
+  .catitem .pc{font-size:11px;color:var(--gris);white-space:nowrap;font-weight:700}
+  .catitem .cdel{background:none;border:none;color:#b8341f;font-size:16px;cursor:pointer;font-weight:700;padding:0 2px}
+  .catitem .cgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin-top:8px}
+  .catitem .cc{background:var(--crema);border-radius:7px;padding:5px 7px}
+  .catitem .cc .l{font-size:9.5px;color:var(--gris);text-transform:uppercase;font-weight:700;letter-spacing:.2px}
+  .catitem .cc .vv{font-weight:800;font-size:13px;color:var(--tinta)}
+  .catitem .cc .vv small{font-size:10px;color:var(--gris);font-weight:600}
+  .catempty{text-align:center;color:var(--gris);font-size:13px;padding:20px 0}
+  .note{font-size:12px;color:var(--gris);margin-top:8px;line-height:1.5}
+  .yellow{background:#fff8e6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Calculadora de Precios</h1><p>La Deportiva &middot; tragos, bebidas y comida</p></header>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="lic">Tragos</div>
+    <div class="tab" data-tab="beb">Bebidas</div>
+    <div class="tab" data-tab="com">Comida</div>
+    <div class="tab" data-tab="cat">Catálogo</div>
+  </div>
+
+  <div class="panel active" id="lic">
+    <div class="card">
+      <div class="row2">
+        <div class="field"><label>Precio de compra</label><div class="inbox yellow"><span class="pre">&#8353;</span><input id="l_precio" type="number" value="9000" step="100"></div></div>
+        <div class="field"><label>Tama&ntilde;o del envase</label><div class="inbox yellow"><input id="l_ml" type="number" value="1000" step="50"><span class="suf">ml</span></div></div>
+      </div>
+      <p class="note">Botella = 750 ml &middot; Litro = 1000 ml.</p>
+    </div>
+    <div class="costline" id="l_base"></div>
+    <div class="result"><h3>Precio del trago / porci&oacute;n</h3><div id="l_out"></div></div>
+    <details>
+      <summary>Ajustes de f&oacute;rmula (avanzado)</summary>
+      <div class="adv">
+        <div class="row2">
+          <div class="field"><label>IVA</label><div class="inbox"><input id="g_iva" type="number" value="13" step="1"><span class="suf">%</span></div></div>
+          <div class="field"><label>Servicio (ac&aacute;)</label><div class="inbox"><input id="g_serv" type="number" value="10" step="1"><span class="suf">%</span></div></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Colch&oacute;n: umbral</label><div class="inbox"><span class="pre">&#8353;</span><input id="g_umbral" type="number" value="19000" step="500"></div></div>
+          <div class="field"><label>Colch&oacute;n %</label><div class="inbox"><input id="g_colchon" type="number" value="10" step="1"><span class="suf">%</span></div></div>
+        </div>
+        <div class="field"><label>Tragos por litro</label><div class="inbox"><input id="g_shots" type="number" value="22" step="1"><span class="suf">tragos</span></div></div>
+        <p class="note">Margen de cada porci&oacute;n:</p>
+        <table class="mtable"><thead><tr><th>Porci&oacute;n</th><th>ml</th><th>Margen ac&aacute;</th><th>Margen llevar</th></tr></thead><tbody id="m_rows"></tbody></table>
+      </div>
+    </details>
+  </div>
+
+  <div class="panel" id="beb">
+    <div class="card">
+      <div class="field"><label>Costo unitario (por lata/botella)</label><div class="inbox yellow"><span class="pre">&#8353;</span><input id="b_costo" type="number" value="694" step="10"></div></div>
+      <div class="field"><label>Food Cost %</label><div class="inbox yellow"><input id="b_fc" type="number" value="65" step="1"><span class="suf">%</span></div></div>
+      <p class="note">Cervezas 65% &middot; coolers (Smirnoff, Ad&aacute;n, Bamboo) 60% &middot; refrescos 50%.</p>
+    </div>
+    <div class="result"><h3>Precio de la bebida</h3>
+      <div class="pr"><span class="n">Para ac&aacute; <small>(con servicio)</small></span><span class="v" id="b_aca">&mdash;</span></div>
+      <div class="pr"><span class="n">Para llevar</span><span class="v" id="b_llevar">&mdash;</span></div>
+      <div class="pr"><span class="n">Ganancia por unidad <small>(llevar)</small></span><span class="v" id="b_gan">&mdash;</span></div>
+    </div>
+    <p class="note">Precio = Costo &divide; Food Cost &times; 1,13 (IVA). Para ac&aacute; se agrega &times;1,10 de servicio. Usa el IVA y servicio de la pesta&ntilde;a Tragos.</p>
+  </div>
+
+  <div class="panel" id="com">
+    <div class="card">
+      <label class="seclbl">Ingredientes del plato</label>
+      <div class="rhead2"><span>Costo</span><span>Paquete</span><span>Se usa</span><span style="text-align:right">= &#8353;</span></div>
+      <div id="r_rows"></div>
+      <button class="addbtn" id="r_add">+ Agregar ingrediente</button>
+
+      <label class="seclbl" style="margin-top:16px">Desechables / empaque <small>(costo directo, sin ganancia)</small></label>
+      <div class="rhead2"><span>Costo</span><span>Paquete</span><span>Se usa</span><span style="text-align:right">= &#8353;</span></div>
+      <div id="d_rows"></div>
+      <button class="addbtn" id="d_add">+ Agregar desechable</button>
+
+      <div class="row2" style="margin-top:16px">
+        <div class="field" style="margin-bottom:0"><label>Rinde (porciones)</label><div class="inbox"><input id="c_rinde" type="number" value="1" step="1" min="1"><span class="suf">platos</span></div></div>
+        <div class="field" style="margin-bottom:0"><label>% de ganancia</label><div class="inbox yellow"><input id="c_gan" type="number" value="65" step="1" max="99"><span class="suf">%</span></div></div>
+      </div>
+      <p class="note">% de ganancia = de cada &#8353;100 vendidos, cu&aacute;nto es ganancia (el resto es el costo). Comida suele ir a 60&ndash;70%. Los ingredientes se dividen entre las porciones; los desechables son por plato.</p>
+    </div>
+    <div class="result"><h3>Precio del platillo</h3>
+      <div class="pr"><span class="n">Costo de ingredientes <small>(por plato)</small></span><span class="v" id="c_costoing">&mdash;</span></div>
+      <div class="pr"><span class="n">Costo de desechables <small>(por plato)</small></span><span class="v" id="c_costodes">&mdash;</span></div>
+      <div class="pr"><span class="n">Para comer ac&aacute; <small>(+ servicio)</small></span><span class="v" id="c_aca">&mdash;</span></div>
+      <div class="pr"><span class="n">Para llevar <small>(+ empaque)</small></span><span class="v" id="c_llevar">&mdash;</span></div>
+    </div>
+    <p class="note">Ac&aacute; = precio con ganancia + IVA + 10% servicio. Llevar = precio con ganancia + IVA + costo del empaque (sin ganancia). Redondeado a &#8353;100.</p>
+  </div>
+
+  <div class="panel" id="cat">
+    <div class="card">
+      <div class="lupa"><span>🔍</span><input id="cat_q" type="text" placeholder="Buscar por nombre o precio (ej. whisky o 10000)"></div>
+      <div id="cat_results"></div>
+    </div>
+    <details>
+      <summary>Agregar producto nuevo</summary>
+      <div class="adv">
+        <div class="field"><label>Tipo</label><div class="inbox"><select id="add_tipo"><option value="licor">Licor / trago</option><option value="bebida">Bebida / cerveza</option></select></div></div>
+        <div class="field"><label>Nombre</label><div class="inbox"><input id="add_nombre" type="text" placeholder="Ej. Ron nuevo"></div></div>
+        <div id="add_licor">
+          <div class="row2">
+            <div class="field"><label>Precio de compra</label><div class="inbox"><span class="pre">&#8353;</span><input id="add_precio" type="number" step="100"></div></div>
+            <div class="field"><label>Tama\u00f1o</label><div class="inbox"><input id="add_ml" type="number" value="1000" step="50"><span class="suf">ml</span></div></div>
+          </div>
+        </div>
+        <div id="add_bebida" style="display:none">
+          <div class="row2">
+            <div class="field"><label>Costo unitario</label><div class="inbox"><span class="pre">&#8353;</span><input id="add_costo" type="number" step="10"></div></div>
+            <div class="field"><label>Food Cost %</label><div class="inbox"><input id="add_fc" type="number" value="65" step="1"><span class="suf">%</span></div></div>
+          </div>
+        </div>
+        <button class="addbtn" id="add_btn" style="border-style:solid;background:#111;color:#FFA429;border-color:#111">Guardar producto</button>
+        <p class="note">Se guarda en este tel\u00e9fono. \u00datil para licores que llegaron y a\u00fan no est\u00e1n en el sistema.</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const mround=(v,m=100)=>Math.round(v/m)*m;
+const fmt=n=>'\u20a1'+Math.round(n).toLocaleString('es-CR');
+
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active'); $(t.dataset.tab).classList.add('active');
+}));
+
+const porciones=[
+  {n:'Trago peque\u00f1o',ml:45,shots:1,frac:0.045,mAca:115,mLlevar:null},
+  {n:'Trago lleno',ml:90,shots:2,frac:0.090,mAca:105,mLlevar:null},
+  {n:'Cuarta',ml:225,shots:5,frac:0.225,mAca:105,mLlevar:50},
+  {n:'Pacha',ml:360,shots:8,frac:0.360,mAca:105,mLlevar:50},
+  {n:'Botella',ml:765,shots:17,frac:0.765,mAca:95,mLlevar:45},
+  {n:'Litro',ml:1000,shots:22,frac:1.0,mAca:80,mLlevar:45},
+];
+function buildMargins(){
+  const tb=$('m_rows'); tb.innerHTML='';
+  porciones.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td>'+p.n+'</td><td style="text-align:right">'+p.ml+'</td>'+
+      '<td style="text-align:right"><input type="number" value="'+p.mAca+'" data-i="'+i+'" data-k="mAca">%</td>'+
+      '<td style="text-align:right">'+(p.mLlevar===null?'\u2014':'<input type="number" value="'+p.mLlevar+'" data-i="'+i+'" data-k="mLlevar">%')+'</td>';
+    tb.appendChild(tr);
+  });
+  tb.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',e=>{
+    porciones[e.target.dataset.i][e.target.dataset.k]=+e.target.value||0; calc();
+  }));
+}
+
+const UNITS={kg:{base:1000,fam:'peso'},g:{base:1,fam:'peso'},l:{base:1000,fam:'vol'},ml:{base:1,fam:'vol'},u:{base:1,fam:'u'}};
+let receta=[
+  {n:'Arroz',costo:1500,paq:2,pqu:'kg',usa:120,uu:'g'},
+  {n:'Frijoles',costo:1200,paq:1,pqu:'kg',usa:100,uu:'g'},
+  {n:'Carne',costo:4500,paq:1,pqu:'kg',usa:150,uu:'g'},
+  {n:'Huevo',costo:1800,paq:30,pqu:'u',usa:1,uu:'u'},
+  {n:'Ensalada / pl\u00e1tano',costo:800,paq:1,pqu:'kg',usa:80,uu:'g'},
+];
+let desech=[
+  {n:'Empaque para llevar',costo:5000,paq:50,pqu:'u',usa:1,uu:'u'},
+  {n:'Servilletas',costo:500,paq:100,pqu:'u',usa:2,uu:'u'},
+];
+function opts(sel){return ['kg','g','l','ml','u'].map(u=>'<option value="'+u+'"'+(u===sel?' selected':'')+'>'+u+'</option>').join('')}
+function ingCost(r){
+  const pq=UNITS[r.pqu],uu=UNITS[r.uu];
+  if(!pq||!uu||pq.fam!==uu.fam) return null;
+  const paqBase=(+r.paq||0)*pq.base;
+  if(paqBase<=0) return null;
+  const usadoBase=(+r.usa||0)*uu.base;
+  return (+r.costo||0)*(usadoBase/paqBase);
+}
+function buildList(arr,contId){
+  const cont=$(contId); cont.innerHTML='';
+  arr.forEach((r,i)=>{
+    const div=document.createElement('div');
+    div.className='ing3';
+    div.innerHTML=
+      '<div class="r1"><input placeholder="Nombre" value="'+r.n+'" data-i="'+i+'" data-k="n">'+
+        '<button class="del" data-del="'+i+'">\u00d7</button></div>'+
+      '<div class="r2">'+
+        '<div class="box"><span class="pre">\u20a1</span><input class="costo" type="number" value="'+r.costo+'" data-i="'+i+'" data-k="costo"></div>'+
+        '<div class="box"><input type="number" value="'+r.paq+'" data-i="'+i+'" data-k="paq"><select data-i="'+i+'" data-k="pqu">'+opts(r.pqu)+'</select></div>'+
+        '<div class="box"><input type="number" value="'+r.usa+'" data-i="'+i+'" data-k="usa"><select data-i="'+i+'" data-k="uu">'+opts(r.uu)+'</select></div>'+
+        '<div class="res" data-res="'+i+'">\u2014</div>'+
+      '</div>';
+    cont.appendChild(div);
+  });
+  cont.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',e=>{
+    const i=+e.target.dataset.i,k=e.target.dataset.k;
+    arr[i][k]=(k==='costo'||k==='usa'||k==='paq')?(+e.target.value||0):e.target.value; calc();
+  }));
+  cont.querySelectorAll('.del').forEach(b=>b.addEventListener('click',e=>{
+    arr.splice(+e.target.dataset.del,1); buildList(arr,contId); calc();
+  }));
+}
+function sumList(arr,contSel){
+  let t=0;
+  arr.forEach((r,i)=>{
+    const c=ingCost(r);
+    const cell=document.querySelector(contSel+' [data-res="'+i+'"]');
+    if(c===null){ if(cell){cell.textContent='\u26a0'; cell.className='res warn';} }
+    else { t+=c; if(cell){cell.textContent=fmt(c); cell.className='res';} }
+  });
+  return t;
+}
+$('r_add').addEventListener('click',()=>{receta.push({n:'',costo:0,paq:1,pqu:'kg',usa:0,uu:'g'});buildList(receta,'r_rows');calc();});
+$('d_add').addEventListener('click',()=>{desech.push({n:'',costo:0,paq:1,pqu:'u',usa:1,uu:'u'});buildList(desech,'d_rows');calc();});
+
+function calc(){
+  const iva=1+(+$('g_iva').value||0)/100;
+  const serv=1+(+$('g_serv').value||0)/100;
+  const umbral=+$('g_umbral').value||0;
+  const colchon=(+$('g_colchon').value||0)/100;
+  const shots=+$('g_shots').value||22;
+
+  const P=+$('l_precio').value||0,M=+$('l_ml').value||1;
+  const E=P/M*1000, F=(E<=umbral)?E*colchon:0, G=E+F;
+  $('l_base').textContent='Equivalente a litro: '+fmt(E)+' \u00b7 + colch\u00f3n: '+fmt(F)+' \u00b7 base: '+fmt(G)+' \u00b7 costo por trago: '+fmt(G/shots);
+  let html='';
+  porciones.forEach(p=>{
+    const costoAca=G/shots*p.shots;
+    const precioAca=mround(costoAca*(1+p.mAca/100)*iva*serv);
+    let v;
+    if(p.mLlevar!==null){
+      const precioLl=mround(G*p.frac*(1+p.mLlevar/100)*iva);
+      v='<span class="v">'+fmt(precioAca)+'<br><small>llevar '+fmt(precioLl)+'</small></span>';
+    }else v='<span class="v">'+fmt(precioAca)+'</span>';
+    html+='<div class="pr"><span class="n">'+p.n+' <small>'+p.ml+'ml \u00b7 costo '+fmt(costoAca)+'</small></span>'+v+'</div>';
+  });
+  $('l_out').innerHTML=html;
+
+  const bc=+$('b_costo').value||0,bfc=(+$('b_fc').value||1)/100;
+  $('b_aca').textContent=fmt(mround(bc/bfc*iva*serv));
+  $('b_llevar').textContent=fmt(mround(bc/bfc*iva));
+  $('b_gan').textContent=fmt(mround(bc/bfc*iva)-bc);
+
+  const rinde=Math.max(1,+$('c_rinde').value||1);
+  const totIng=sumList(receta,'#r_rows')/rinde;
+  const totDes=sumList(desech,'#d_rows');
+  let gan=(+$('c_gan').value||0)/100; if(gan>=0.99) gan=0.99;
+  const fc=1-gan;
+  const baseSinIVA=totIng/fc;
+  const baseConIVA=baseSinIVA*iva;
+  $('c_costoing').textContent=fmt(totIng);
+  $('c_costodes').textContent=fmt(totDes);
+  $('c_aca').textContent=fmt(mround(baseConIVA*serv));
+  $('c_llevar').textContent=fmt(mround(baseConIVA+totDes));
+}
+
+['l_precio','l_ml','g_iva','g_serv','g_umbral','g_colchon','g_shots','b_costo','b_fc','c_gan','c_rinde']
+  .forEach(id=>$(id).addEventListener('input',calc));
+
+// ===== CATALOGO =====
+const CAT_SEED=[
+ {t:'licor',n:'Guaro Cacique',ml:1000,p:4701},{t:'licor',n:'Colorado Cacique',ml:1000,p:5000},
+ {t:'licor',n:'Ginebra Cacique',ml:1000,p:5000},{t:'licor',n:'An\u00eds Imperial',ml:750,p:8000},
+ {t:'licor',n:'Ron Cortez',ml:1000,p:5000},{t:'licor',n:'Ron Bacard\u00ed Oro',ml:1000,p:6000},
+ {t:'licor',n:'Ron Bacard\u00ed A\u00f1ejo',ml:1000,p:8500},{t:'licor',n:'Ron Flor de Ca\u00f1a Coco',ml:750,p:7000},
+ {t:'licor',n:'Ron Flor de Ca\u00f1a 7',ml:1000,p:8000},{t:'licor',n:'Ron Flor de Ca\u00f1a 12',ml:750,p:14000},
+ {t:'licor',n:'Ron Capit\u00e1n Morgan',ml:1000,p:9500},{t:'licor',n:'Ron Centenario',ml:1000,p:10500},
+ {t:'licor',n:'Ron Viejo de Caldas',ml:750,p:8000},{t:'licor',n:'Ron Rico',ml:750,p:6500},
+ {t:'licor',n:'Ron Abuelo',ml:1000,p:10000},{t:'licor',n:'Malibu',ml:1000,p:10000},
+ {t:'licor',n:'Amarula',ml:1000,p:12000},{t:'licor',n:'Baileys',ml:1000,p:14000},
+ {t:'licor',n:'Whisky JW Rojo',ml:1000,p:9000},{t:'licor',n:'Whisky JYB',ml:1000,p:9500},
+ {t:'licor',n:'Whisky Passport',ml:1000,p:10000},{t:'licor',n:'Whisky Something Special',ml:1000,p:8500},
+ {t:'licor',n:'Whisky Black & White',ml:1000,p:7700},{t:'licor',n:'Whisky Ballantines',ml:1000,p:10000},
+ {t:'licor',n:"Whisky Dewar's",ml:1000,p:10000},{t:'licor',n:'Whisky JW Negro',ml:1000,p:12999},
+ {t:'licor',n:'Whisky Chivas 12',ml:1000,p:17000},{t:'licor',n:'Whisky Old Parr',ml:1000,p:18500},
+ {t:'licor',n:'Whisky Bucanas',ml:1000,p:22000},{t:'licor',n:'Whisky Jim Bean',ml:1000,p:9000},
+ {t:'licor',n:'Whisky Fireball',ml:750,p:10000},{t:'licor',n:"Jack Daniel's Negro",ml:1000,p:12999},
+ {t:'licor',n:"Jack Daniel's Fire",ml:1000,p:10500},{t:'licor',n:"Jack Daniel's Honey",ml:1000,p:10500},
+ {t:'licor',n:'Tequila Jos\u00e9 Cuervo',ml:1000,p:10000},{t:'licor',n:'Tequila Cuervo Fresa',ml:750,p:11500},
+ {t:'licor',n:'Tequila Rose',ml:750,p:12500},{t:'licor',n:'Tequila 1800 Rep/Silver',ml:750,p:13000},
+ {t:'licor',n:'Tequila 1800 A\u00f1ejo/Coco',ml:750,p:14000},{t:'licor',n:'Tequila 1800 Cristalino',ml:750,p:22000},
+ {t:'licor',n:'Tequila Gran Malo',ml:750,p:16500},{t:'licor',n:'Tequila Don Julio',ml:750,p:30000},
+ {t:'licor',n:'Tequila Patr\u00f3n Rep.',ml:1000,p:28000},{t:'licor',n:'Tequila Patr\u00f3n A\u00f1ejo',ml:1000,p:33000},
+ {t:'licor',n:'Vodka Smirnoff',ml:1000,p:8300},{t:'licor',n:'Vodka Nikolai',ml:750,p:5600},
+ {t:'licor',n:'Campari',ml:1000,p:10500},{t:'licor',n:'J\u00e4ger',ml:1000,p:10500},
+ {t:'licor',n:'Jag\u00fcer Naranja',ml:750,p:14000},{t:'licor',n:'Hypnotiq',ml:750,p:14000},
+ {t:'licor',n:'Frangelico',ml:750,p:10000},{t:'licor',n:'Valdespino',ml:750,p:10500},
+ {t:'licor',n:'Ginebra Beefeater',ml:750,p:15000},{t:'licor',n:'Ginebra Conciere',ml:750,p:10000},
+ {t:'licor',n:'Ginebra Tanqueray',ml:750,p:15000},{t:'licor',n:'Aguardiente Antioque\u00f1o',ml:1000,p:7500},
+ {t:'licor',n:'Aguardiente Antioque\u00f1o Verde',ml:1000,p:7500},
+];
+const CKEY='ladeportiva_cat_custom';
+function loadCustom(){ try{const s=localStorage.getItem(CKEY); return s?JSON.parse(s):[];}catch(e){return [];} }
+function saveCustom(a){ try{localStorage.setItem(CKEY,JSON.stringify(a));}catch(e){} }
+let catCustom=loadCustom();
+
+function gp(){return{iva:1+(+$('g_iva').value||0)/100,serv:1+(+$('g_serv').value||0)/100,umbral:+$('g_umbral').value||0,colchon:(+$('g_colchon').value||0)/100,shots:+$('g_shots').value||22};}
+function licorPorc(precio,ml){
+  const P=gp(); const E=precio/ml*1000, F=(E<=P.umbral)?E*P.colchon:0, G=E+F;
+  return porciones.map(p=>({n:p.n,aca:mround(G/P.shots*p.shots*(1+p.mAca/100)*P.iva*P.serv),ll:p.mLlevar!==null?mround(G*p.frac*(1+p.mLlevar/100)*P.iva):null}));
+}
+function bebPrecio(costo,fc){const P=gp();return{aca:mround(costo/(fc/100)*P.iva*P.serv),ll:mround(costo/(fc/100)*P.iva)};}
+
+function renderItem(it,isCustom){
+  const div=document.createElement('div'); div.className='catitem';
+  let top='<div class="ctop"><span class="nm">'+it.n+'</span><span class="pc">\u20a1'+Number(it.p||it.costo).toLocaleString('es-CR')+(it.t==='licor'?' \u00b7 '+it.ml+'ml':'')+(isCustom?' <button class="cdel" data-cdel="'+it._i+'">\u00d7</button>':'')+'</span></div>';
+  let body='';
+  if(it.t==='licor'){
+    const pr=licorPorc(it.p,it.ml);
+    body='<div class="cgrid">'+pr.map(x=>'<div class="cc"><div class="l">'+x.n+'</div><div class="vv">'+fmt(x.aca)+(x.ll!==null?' <small>ll '+fmt(x.ll)+'</small>':'')+'</div></div>').join('')+'</div>';
+  }else{
+    const b=bebPrecio(it.costo,it.fc||65);
+    body='<div class="cgrid"><div class="cc"><div class="l">Ac\u00e1</div><div class="vv">'+fmt(b.aca)+'</div></div><div class="cc"><div class="l">Llevar</div><div class="vv">'+fmt(b.ll)+'</div></div></div>';
+  }
+  div.innerHTML=top+body;
+  return div;
+}
+function renderCat(){
+  const q=$('cat_q').value.trim().toLowerCase();
+  const cont=$('cat_results'); cont.innerHTML='';
+  const all=CAT_SEED.concat(catCustom.map((c,i)=>Object.assign({_i:i,_c:true},c)));
+  const hasLetter=/[a-z\u00e1\u00e9\u00ed\u00f3\u00fa\u00f1]/i.test(q);
+  let list;
+  const num=parseInt(q.replace(/[^0-9]/g,''),10);
+  const isNum=q!==''&&!hasLetter&&!isNaN(num);
+  if(q===''){ list=all; }
+  else if(isNum){ list=all.filter(it=>Number(it.p||it.costo)===num); }
+  else{ list=all.filter(it=>it.n.toLowerCase().includes(q)); }
+  if(isNum && list.length){ const h=document.createElement('div'); h.className='catgroup'; h.textContent='Productos con costo de '+fmt(num); cont.appendChild(h); }
+  if(!list.length){ cont.innerHTML='<div class="catempty">Sin resultados. Prob\u00e1 otro nombre o precio, o agreg\u00e1 el producto abajo.</div>'; return; }
+  list.forEach(it=>cont.appendChild(renderItem(it,!!it._c)));
+  cont.querySelectorAll('.cdel').forEach(b=>b.addEventListener('click',e=>{catCustom.splice(+e.target.dataset.cdel,1);saveCustom(catCustom);renderCat();}));
+}
+$('cat_q').addEventListener('input',renderCat);
+$('add_tipo').addEventListener('change',e=>{
+  const lic=e.target.value==='licor';
+  $('add_licor').style.display=lic?'':'none';
+  $('add_bebida').style.display=lic?'none':'';
+});
+$('add_btn').addEventListener('click',()=>{
+  const t=$('add_tipo').value, n=$('add_nombre').value.trim();
+  if(!n){return;}
+  if(t==='licor'){ const p=+$('add_precio').value||0, ml=+$('add_ml').value||1000; if(!p)return; catCustom.push({t:'licor',n:n,ml:ml,p:p}); }
+  else{ const c=+$('add_costo').value||0, fc=+$('add_fc').value||65; if(!c)return; catCustom.push({t:'bebida',n:n,costo:c,fc:fc}); }
+  saveCustom(catCustom);
+  $('add_nombre').value='';$('add_precio')&&($('add_precio').value='');$('add_costo')&&($('add_costo').value='');
+  renderCat();
+});
+renderCat();
+
+buildMargins(); buildList(receta,'r_rows'); buildList(desech,'d_rows'); calc();
+</script>
+</body>
+</html>
