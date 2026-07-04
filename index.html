@@ -177,22 +177,22 @@
     <details>
       <summary>Agregar producto nuevo</summary>
       <div class="adv">
-        <div class="field"><label>Tipo</label><div class="inbox"><select id="add_tipo"><option value="licor">Licor / trago</option><option value="bebida">Bebida / cerveza</option></select></div></div>
+        <div class="field"><label>Tipo</label><div class="inbox"><select id="add_tipo"><option value="licor">Licor / trago</option><option value="bebida">Bebida / cerveza</option><option value="otro">Otro (insumo / empaque)</option></select></div></div>
         <div class="field"><label>Nombre</label><div class="inbox"><input id="add_nombre" type="text" placeholder="Ej. Ron nuevo"></div></div>
         <div id="add_licor">
           <div class="row2">
             <div class="field"><label>Precio de compra</label><div class="inbox"><span class="pre">&#8353;</span><input id="add_precio" type="number" step="100"></div></div>
-            <div class="field"><label>Tama\u00f1o</label><div class="inbox"><input id="add_ml" type="number" value="1000" step="50"><span class="suf">ml</span></div></div>
+            <div class="field"><label>Tamaño</label><div class="inbox"><input id="add_ml" type="number" value="1000" step="50"><span class="suf">ml</span></div></div>
           </div>
         </div>
         <div id="add_bebida" style="display:none">
           <div class="row2">
             <div class="field"><label>Costo unitario</label><div class="inbox"><span class="pre">&#8353;</span><input id="add_costo" type="number" step="10"></div></div>
-            <div class="field"><label>Food Cost %</label><div class="inbox"><input id="add_fc" type="number" value="65" step="1"><span class="suf">%</span></div></div>
+            <div class="field" id="add_fc_wrap"><label>Food Cost %</label><div class="inbox"><input id="add_fc" type="number" value="65" step="1"><span class="suf">%</span></div></div>
           </div>
         </div>
         <button class="addbtn" id="add_btn" style="border-style:solid;background:#111;color:#FFA429;border-color:#111">Guardar producto</button>
-        <p class="note">Se guarda en este tel\u00e9fono. \u00datil para licores que llegaron y a\u00fan no est\u00e1n en el sistema.</p>
+        <p class="note">Se guarda en este teléfono. Útil para licores que llegaron y aún no están en el sistema.</p>
       </div>
     </details>
   </div>
@@ -347,11 +347,11 @@ const CAT_SEED=[
  {t:'licor',n:'Whisky JW Rojo',ml:1000,p:9000},{t:'licor',n:'Whisky JYB',ml:1000,p:9500},
  {t:'licor',n:'Whisky Passport',ml:1000,p:10000},{t:'licor',n:'Whisky Something Special',ml:1000,p:8500},
  {t:'licor',n:'Whisky Black & White',ml:1000,p:7700},{t:'licor',n:'Whisky Ballantines',ml:1000,p:10000},
- {t:'licor',n:"Whisky Dewar's",ml:1000,p:10000},{t:'licor',n:'Whisky JW Negro',ml:1000,p:12999},
- {t:'licor',n:'Whisky Chivas 12',ml:1000,p:17000},{t:'licor',n:'Whisky Old Parr',ml:1000,p:18500},
+ {t:'licor',n:"Whisky Dewar's",ml:1000,p:10000},{t:'licor',n:'Whisky JW Negro',ml:1000,p:18500},
+ {t:'licor',n:'Whisky Chivas 12',ml:1000,p:17500},{t:'licor',n:'Whisky Old Parr',ml:1000,p:18500},
  {t:'licor',n:'Whisky Bucanas',ml:1000,p:22000},{t:'licor',n:'Whisky Jim Bean',ml:1000,p:9000},
- {t:'licor',n:'Whisky Fireball',ml:750,p:10000},{t:'licor',n:"Jack Daniel's Negro",ml:1000,p:12999},
- {t:'licor',n:"Jack Daniel's Fire",ml:1000,p:10500},{t:'licor',n:"Jack Daniel's Honey",ml:1000,p:10500},
+ {t:'licor',n:'Whisky Fireball',ml:750,p:10000},{t:'licor',n:"Jack Daniel's Negro",ml:1000,p:13000},
+ {t:'licor',n:"Jack Daniel's Manzana",ml:1000,p:14500},{t:'licor',n:"Jack Daniel's Honey",ml:1000,p:13000},
  {t:'licor',n:'Tequila Jos\u00e9 Cuervo',ml:1000,p:10000},{t:'licor',n:'Tequila Cuervo Fresa',ml:750,p:11500},
  {t:'licor',n:'Tequila Rose',ml:750,p:12500},{t:'licor',n:'Tequila 1800 Rep/Silver',ml:750,p:13000},
  {t:'licor',n:'Tequila 1800 A\u00f1ejo/Coco',ml:750,p:14000},{t:'licor',n:'Tequila 1800 Cristalino',ml:750,p:22000},
@@ -360,15 +360,33 @@ const CAT_SEED=[
  {t:'licor',n:'Vodka Smirnoff',ml:1000,p:8300},{t:'licor',n:'Vodka Nikolai',ml:750,p:5600},
  {t:'licor',n:'Campari',ml:1000,p:10500},{t:'licor',n:'J\u00e4ger',ml:1000,p:10500},
  {t:'licor',n:'Jag\u00fcer Naranja',ml:750,p:14000},{t:'licor',n:'Hypnotiq',ml:750,p:14000},
- {t:'licor',n:'Frangelico',ml:750,p:10000},{t:'licor',n:'Valdespino',ml:750,p:10500},
+ {t:'licor',n:'Frangelico',ml:750,p:13000},{t:'licor',n:'Valdespino',ml:750,p:10500},
  {t:'licor',n:'Ginebra Beefeater',ml:750,p:15000},{t:'licor',n:'Ginebra Conciere',ml:750,p:10000},
  {t:'licor',n:'Ginebra Tanqueray',ml:750,p:15000},{t:'licor',n:'Aguardiente Antioque\u00f1o',ml:1000,p:7500},
- {t:'licor',n:'Aguardiente Antioque\u00f1o Verde',ml:1000,p:7500},
+ {t:'licor',n:'Aguardiente Antioque\u00f1o Verde',ml:1000,p:7500},{t:'licor',n:'Aguardiente Antioque\u00f1o Amarillo',ml:1000,p:10500},{t:'licor',n:'Whisky Buchanans Pi\u00f1a 750',ml:750,p:24000},
+ {t:'bebida',n:'Cerveza Imperial',costo:694,fc:65},{t:'bebida',n:'Cerveza Imperial Silver',costo:694,fc:65},
+ {t:'bebida',n:'Cerveza Pilsen',costo:694,fc:65},{t:'bebida',n:'Cerveza Pilsen Ahumada',costo:694,fc:65},
+ {t:'bebida',n:'Cerveza Pilsen 6.0',costo:694,fc:65},{t:'bebida',n:'Cerveza Imperial Ultra',costo:694,fc:65},
+ {t:'bebida',n:'Cerveza Imperial Light',costo:694,fc:65},{t:'bebida',n:'Rock Lim\u00f3n',costo:825,fc:65},
+ {t:'bebida',n:'Heineken',costo:890,fc:65},{t:'bebida',n:'Sol',costo:883,fc:65},
+ {t:'bebida',n:'Bavaria Gold',costo:813,fc:65},{t:'bebida',n:'Bavaria Light',costo:813,fc:65},
+ {t:'bebida',n:'Bavaria Master',costo:813,fc:65},{t:'bebida',n:'Smirnoff Ice',costo:1064,fc:60},
+ {t:'bebida',n:'Smirnoff Green',costo:1064,fc:60},{t:'bebida',n:'Smirnoff Black',costo:1064,fc:60},
+ {t:'bebida',n:'Smirnoff Guaran\u00e1',costo:1064,fc:60},{t:'bebida',n:'Ad\u00e1n y Eva',costo:938,fc:60},
+ {t:'bebida',n:'Bamboo Daiquiri/Fresa',costo:827,fc:60},{t:'bebida',n:'Bamboo Mojito',costo:827,fc:60},
+ {t:'bebida',n:'Bamboo Ron/Cola',costo:789,fc:60},{t:'bebida',n:'Ener Max Guaran\u00e1',costo:752,fc:60},
+ {t:'bebida',n:'Tropical T\u00e9 Blanco',costo:376,fc:50},{t:'bebida',n:'Tropical T\u00e9 Melocot\u00f3n',costo:376,fc:50},
+ {t:'bebida',n:'Tropical Frutas',costo:365,fc:50},{t:'bebida',n:'Pepsi',costo:410,fc:50},
+ {t:'bebida',n:'Evervess Ginger',costo:657,fc:50},{t:'bebida',n:'Evervess Soda',costo:657,fc:50},
+ {t:'bebida',n:'Evervess T\u00f3nica',costo:657,fc:50},{t:'bebida',n:'Milory Toronja',costo:639,fc:50},
+ {t:'bebida',n:'Agua San \u00c1ngel',costo:198,fc:50},
 ];
-const CKEY='ladeportiva_cat_custom';
-function loadCustom(){ try{const s=localStorage.getItem(CKEY); return s?JSON.parse(s):[];}catch(e){return [];} }
-function saveCustom(a){ try{localStorage.setItem(CKEY,JSON.stringify(a));}catch(e){} }
-let catCustom=loadCustom();
+const CKEY='ladeportiva_cat_v2';
+function loadState(){ try{const s=localStorage.getItem(CKEY); const o=s?JSON.parse(s):null; return o&&o.edits?o:{edits:{},adds:[],dels:[]};}catch(e){return {edits:{},adds:[],dels:[]};} }
+function saveState(st){ try{localStorage.setItem(CKEY,JSON.stringify(st));}catch(e){} }
+let CST=loadState();
+const nkey=s=>(s||'').trim().toLowerCase();
+let editKey=null;
 
 function gp(){return{iva:1+(+$('g_iva').value||0)/100,serv:1+(+$('g_serv').value||0)/100,umbral:+$('g_umbral').value||0,colchon:(+$('g_colchon').value||0)/100,shots:+$('g_shots').value||22};}
 function licorPorc(precio,ml){
@@ -377,48 +395,99 @@ function licorPorc(precio,ml){
 }
 function bebPrecio(costo,fc){const P=gp();return{aca:mround(costo/(fc/100)*P.iva*P.serv),ll:mround(costo/(fc/100)*P.iva)};}
 
-function renderItem(it,isCustom){
-  const div=document.createElement('div'); div.className='catitem';
-  let top='<div class="ctop"><span class="nm">'+it.n+'</span><span class="pc">\u20a1'+Number(it.p||it.costo).toLocaleString('es-CR')+(it.t==='licor'?' \u00b7 '+it.ml+'ml':'')+(isCustom?' <button class="cdel" data-cdel="'+it._i+'">\u00d7</button>':'')+'</span></div>';
-  let body='';
+function workingList(){
+  let list=CAT_SEED.map(s=>{const k=nkey(s.n); const e=CST.edits[k]; return Object.assign({},s,e||{},{key:k,seed:true});}).filter(s=>!CST.dels.includes(s.key));
+  CST.adds.forEach((a,i)=>{ list.push(Object.assign({},a,{key:nkey(a.n),ai:i})); });
+  return list;
+}
+function priceVal(it){ return it.t==='licor'? it.p : it.costo; }
+
+function itemBody(it){
   if(it.t==='licor'){
     const pr=licorPorc(it.p,it.ml);
-    body='<div class="cgrid">'+pr.map(x=>'<div class="cc"><div class="l">'+x.n+'</div><div class="vv">'+fmt(x.aca)+(x.ll!==null?' <small>ll '+fmt(x.ll)+'</small>':'')+'</div></div>').join('')+'</div>';
-  }else{
+    return '<div class="cgrid">'+pr.map(x=>'<div class="cc"><div class="l">'+x.n+'</div><div class="vv">'+fmt(x.aca)+(x.ll!==null?' <small>ll '+fmt(x.ll)+'</small>':'')+'</div></div>').join('')+'</div>';
+  }else if(it.t==='bebida'){
     const b=bebPrecio(it.costo,it.fc||65);
-    body='<div class="cgrid"><div class="cc"><div class="l">Ac\u00e1</div><div class="vv">'+fmt(b.aca)+'</div></div><div class="cc"><div class="l">Llevar</div><div class="vv">'+fmt(b.ll)+'</div></div></div>';
+    return '<div class="cgrid"><div class="cc"><div class="l">Ac\u00e1</div><div class="vv">'+fmt(b.aca)+'</div></div><div class="cc"><div class="l">Llevar</div><div class="vv">'+fmt(b.ll)+'</div></div></div>';
+  }else{
+    return '<div class="cgrid"><div class="cc"><div class="l">Costo</div><div class="vv">'+fmt(it.costo)+'</div></div></div>';
   }
-  div.innerHTML=top+body;
+}
+function editForm(it){
+  let f='<div style="margin-top:8px">';
+  f+='<div class="field" style="margin-bottom:8px"><label>Nombre</label><div class="inbox"><input id="e_n" value="'+it.n.replace(/"/g,'&quot;')+'"></div></div>';
+  if(it.t==='licor'){
+    f+='<div class="row2"><div class="field" style="margin-bottom:8px"><label>Precio compra</label><div class="inbox"><span class="pre">\u20a1</span><input id="e_p" type="number" value="'+it.p+'"></div></div>'+
+       '<div class="field" style="margin-bottom:8px"><label>ml</label><div class="inbox"><input id="e_ml" type="number" value="'+it.ml+'"></div></div></div>';
+  }else if(it.t==='bebida'){
+    f+='<div class="row2"><div class="field" style="margin-bottom:8px"><label>Costo</label><div class="inbox"><span class="pre">\u20a1</span><input id="e_costo" type="number" value="'+it.costo+'"></div></div>'+
+       '<div class="field" style="margin-bottom:8px"><label>Food Cost %</label><div class="inbox"><input id="e_fc" type="number" value="'+(it.fc||65)+'"></div></div></div>';
+  }else{
+    f+='<div class="field" style="margin-bottom:8px"><label>Costo</label><div class="inbox"><span class="pre">\u20a1</span><input id="e_costo" type="number" value="'+it.costo+'"></div></div>';
+  }
+  f+='<div style="display:flex;gap:8px"><button class="addbtn" style="border-style:solid;background:#111;color:#FFA429;border-color:#111;margin-top:0" id="e_save">Guardar</button>'+
+     '<button class="addbtn" style="margin-top:0" id="e_cancel">Cancelar</button></div></div>';
+  return f;
+}
+function renderItem(it){
+  const div=document.createElement('div'); div.className='catitem';
+  const sub=(it.t==='licor'?' \u00b7 '+it.ml+'ml':'');
+  const top='<div class="ctop"><span class="nm">'+it.n+'</span><span class="pc">\u20a1'+Number(priceVal(it)).toLocaleString('es-CR')+sub+
+    ' <button class="cdel" data-edit="'+it.key+'" style="color:#c07d15">\u270e</button>'+
+    ' <button class="cdel" data-del="'+it.key+'">\u00d7</button></span></div>';
+  div.innerHTML= top + (editKey===it.key ? editForm(it) : itemBody(it));
   return div;
 }
+function findByKey(k){ return workingList().find(x=>x.key===k); }
+
 function renderCat(){
   const q=$('cat_q').value.trim().toLowerCase();
   const cont=$('cat_results'); cont.innerHTML='';
-  const all=CAT_SEED.concat(catCustom.map((c,i)=>Object.assign({_i:i,_c:true},c)));
+  const all=workingList();
   const hasLetter=/[a-z\u00e1\u00e9\u00ed\u00f3\u00fa\u00f1]/i.test(q);
-  let list;
   const num=parseInt(q.replace(/[^0-9]/g,''),10);
   const isNum=q!==''&&!hasLetter&&!isNaN(num);
+  let list;
   if(q===''){ list=all; }
-  else if(isNum){ list=all.filter(it=>Number(it.p||it.costo)===num); }
+  else if(isNum){ list=all.filter(it=>Number(priceVal(it))===num); }
   else{ list=all.filter(it=>it.n.toLowerCase().includes(q)); }
   if(isNum && list.length){ const h=document.createElement('div'); h.className='catgroup'; h.textContent='Productos con costo de '+fmt(num); cont.appendChild(h); }
   if(!list.length){ cont.innerHTML='<div class="catempty">Sin resultados. Prob\u00e1 otro nombre o precio, o agreg\u00e1 el producto abajo.</div>'; return; }
-  list.forEach(it=>cont.appendChild(renderItem(it,!!it._c)));
-  cont.querySelectorAll('.cdel').forEach(b=>b.addEventListener('click',e=>{catCustom.splice(+e.target.dataset.cdel,1);saveCustom(catCustom);renderCat();}));
+  list.forEach(it=>cont.appendChild(renderItem(it)));
+  cont.querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',e=>{editKey=(editKey===e.target.dataset.edit)?null:e.target.dataset.edit; renderCat();}));
+  cont.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{
+    const k=e.target.dataset.del; const it=findByKey(k);
+    if(it&&it.seed){ if(!CST.dels.includes(k))CST.dels.push(k); }
+    else if(it){ CST.adds.splice(it.ai,1); }
+    saveState(CST); editKey=null; renderCat();
+  }));
+  const sv=$('e_save'); if(sv){ sv.addEventListener('click',()=>{
+    const it=findByKey(editKey); if(!it)return;
+    const n=$('e_n').value.trim()||it.n;
+    let patch={n:n};
+    if(it.t==='licor'){ patch.p=+$('e_p').value||it.p; patch.ml=+$('e_ml').value||it.ml; }
+    else if(it.t==='bebida'){ patch.costo=+$('e_costo').value||it.costo; patch.fc=+$('e_fc').value||it.fc; }
+    else{ patch.costo=+$('e_costo').value||it.costo; }
+    if(it.seed){ CST.edits[it.key]=Object.assign({},CST.edits[it.key],patch); }
+    else{ CST.adds[it.ai]=Object.assign({},CST.adds[it.ai],patch); }
+    saveState(CST); editKey=null; renderCat();
+  }); }
+  const cn=$('e_cancel'); if(cn){ cn.addEventListener('click',()=>{editKey=null;renderCat();}); }
 }
 $('cat_q').addEventListener('input',renderCat);
 $('add_tipo').addEventListener('change',e=>{
-  const lic=e.target.value==='licor';
-  $('add_licor').style.display=lic?'':'none';
-  $('add_bebida').style.display=lic?'none':'';
+  const v=e.target.value;
+  $('add_licor').style.display=(v==='licor')?'':'none';
+  $('add_bebida').style.display=(v==='licor')?'none':'';
+  $('add_fc_wrap').style.display=(v==='bebida')?'':'none';
 });
 $('add_btn').addEventListener('click',()=>{
   const t=$('add_tipo').value, n=$('add_nombre').value.trim();
   if(!n){return;}
-  if(t==='licor'){ const p=+$('add_precio').value||0, ml=+$('add_ml').value||1000; if(!p)return; catCustom.push({t:'licor',n:n,ml:ml,p:p}); }
-  else{ const c=+$('add_costo').value||0, fc=+$('add_fc').value||65; if(!c)return; catCustom.push({t:'bebida',n:n,costo:c,fc:fc}); }
-  saveCustom(catCustom);
+  if(t==='licor'){ const p=+$('add_precio').value||0, ml=+$('add_ml').value||1000; if(!p)return; CST.adds.push({t:'licor',n:n,ml:ml,p:p}); }
+  else if(t==='bebida'){ const c=+$('add_costo').value||0, fc=+$('add_fc').value||65; if(!c)return; CST.adds.push({t:'bebida',n:n,costo:c,fc:fc}); }
+  else{ const c=+$('add_costo').value||0; if(!c)return; CST.adds.push({t:'otro',n:n,costo:c}); }
+  saveState(CST);
   $('add_nombre').value='';$('add_precio')&&($('add_precio').value='');$('add_costo')&&($('add_costo').value='');
   renderCat();
 });
